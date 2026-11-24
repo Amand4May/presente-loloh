@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Um presente pra você ♥</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<main id="stage">
+  <p id="title">~ um presente pra você ~</p>
+
+  <div id="giftWrap">
+
+    <!-- envelope: fica ATRÁS do corpo da caixa, então parece sair de dentro dela -->
+    <button id="envelope" aria-label="Abrir a carta" tabindex="-1">
+      <svg viewBox="0 0 200 140" overflow="visible">
+        <rect x="0" y="0" width="200" height="140" rx="6" fill="#ecd3a2"/>
+        <polygon points="0,0 100,78 0,140" fill="#f6e2b9"/>
+        <polygon points="200,0 100,78 200,140" fill="#f6e2b9"/>
+        <polygon points="0,140 100,68 200,140" fill="#fbeccb"/>
+        <g class="flap">
+          <polygon points="0,0 200,0 100,82" fill="#f3dcae" stroke="#e3c692" stroke-width="1.5" stroke-linejoin="round"/>
+        </g>
+        <g class="seal">
+          <circle cx="100" cy="80" r="15" fill="#e8567f"/>
+          <circle cx="100" cy="80" r="11" fill="none" stroke="#ff9db9" stroke-width="1" stroke-dasharray="2 2"/>
+          <text x="100" y="86" text-anchor="middle" font-size="16" fill="#ffe3ec">♥</text>
+        </g>
+      </svg>
+    </button>
+
+    <!-- presente -->
+    <svg id="gift" viewBox="0 0 300 300" role="img" aria-label="Um presente rosa com laço creme">
+      <defs>
+        <linearGradient id="gBody" x1="0" x2="1">
+          <stop offset="0" stop-color="#f77fab"/>
+          <stop offset="1" stop-color="#e2608f"/>
+        </linearGradient>
+        <linearGradient id="gLid" x1="0" x2="1">
+          <stop offset="0" stop-color="#ff95bd"/>
+          <stop offset="1" stop-color="#ef6f9d"/>
+        </linearGradient>
+        <linearGradient id="gRib" x1="0" x2="1">
+          <stop offset="0" stop-color="#fff3d9"/>
+          <stop offset="1" stop-color="#f1dcae"/>
+        </linearGradient>
+      </defs>
+
+      <ellipse cx="150" cy="285" rx="105" ry="9" fill="rgba(0,0,0,.28)"/>
+
+      <!-- corpo -->
+      <g id="body">
+        <rect x="50" y="140" width="200" height="142" rx="7" fill="url(#gBody)"/>
+        <rect x="135" y="140" width="30" height="142" fill="url(#gRib)"/>
+        <rect x="50" y="140" width="200" height="8" fill="rgba(0,0,0,.12)"/>
+      </g>
+
+      <!-- tampa + laço -->
+      <g id="lid">
+        <rect x="40" y="104" width="220" height="44" rx="7" fill="url(#gLid)"/>
+        <rect x="135" y="104" width="30" height="44" fill="url(#gRib)"/>
+        <rect x="40" y="104" width="220" height="7" rx="3" fill="rgba(255,255,255,.22)"/>
+
+        <g id="bow" tabindex="0" role="button" aria-label="Puxe o laço para abrir o presente">
+          <rect x="70" y="40" width="160" height="100" fill="transparent"/>
+          <!-- pontas -->
+          <path d="M145 108 L122 150 L141 143 L149 114Z" fill="#f1dcae"/>
+          <path d="M155 108 L178 150 L159 143 L151 114Z" fill="#f1dcae"/>
+          <!-- laçadas -->
+          <path d="M150 104 C118 56 70 58 82 92 C90 114 128 112 150 104Z" fill="url(#gRib)" stroke="#e6cd9b" stroke-width="1.5"/>
+          <path d="M150 104 C182 56 230 58 218 92 C210 114 172 112 150 104Z" fill="url(#gRib)" stroke="#e6cd9b" stroke-width="1.5"/>
+          <path d="M140 100 C118 76 98 74 96 90" fill="none" stroke="#e6cd9b" stroke-width="2" stroke-linecap="round"/>
+          <path d="M160 100 C182 76 202 74 204 90" fill="none" stroke="#e6cd9b" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="150" cy="104" r="12" fill="#f6e4bb" stroke="#e6cd9b" stroke-width="1.5"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <p id="hint">puxe o laço ↑</p>
+  <button id="readBtn" type="button">abrir a carta ♥</button>
+</main>
+
+<!-- carta -->
+<div id="overlay" aria-hidden="true">
+  <article id="paper" role="dialog" aria-modal="true" aria-label="Carta">
+    <button id="close" aria-label="Fechar carta">×</button>
+    <img src="img/carta-1.jpg" alt="Carta, página 1">
+    <img src="img/carta-2.jpg" alt="Carta, página 2">
+  </article>
+</div>
+
+<script src="bg.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

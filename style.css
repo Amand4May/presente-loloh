@@ -1,0 +1,146 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #fbeccb;
+  --pink: #ff8fb8;
+  --ink: #5a3a4a;
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: linear-gradient(180deg, #140a26 0%, #2a1442 45%, #5a2557 80%, #8a3a67 100%);
+  font-family: "Courier New", monospace;
+  color: var(--cream);
+  -webkit-tap-highlight-color: transparent;
+}
+
+#bg { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+#stage {
+  position: relative; z-index: 2;
+  height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px;
+  padding: 16px;
+}
+
+#title {
+  letter-spacing: .25em; font-size: .85rem; opacity: .75;
+  text-shadow: 0 0 12px rgba(255,143,184,.6);
+}
+
+/* ---------- presente ---------- */
+#giftWrap {
+  position: relative;
+  width: min(340px, 82vw);
+  aspect-ratio: 1;
+  margin-top: 12vh;
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 28px rgba(255,143,184,.35));
+}
+@keyframes float { 50% { transform: translateY(-8px); } }
+
+/* o SVG não pode interceptar toques: só o laço recebe (senão ele tampa o envelope) */
+#gift { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+#bow { pointer-events: all; }
+
+#readBtn {
+  display: none; margin-top: 4px;
+  padding: 14px 32px; border: 0; border-radius: 999px;
+  background: #ff8fb8; color: #3a1530; font: 700 1.1rem "Courier New", monospace; letter-spacing: .08em;
+  box-shadow: 0 0 22px rgba(255,143,184,.7); cursor: pointer; touch-action: manipulation;
+  animation: pulse 2s ease-in-out infinite;
+}
+#readBtn.show { display: block; }
+
+#lid, #bow { transform-box: fill-box; transform-origin: center; }
+#lid { transition: transform 1.1s cubic-bezier(.3,.7,.3,1), opacity .9s ease .2s; }
+#bow { cursor: grab; touch-action: none; outline: none; }
+#bow.dragging { cursor: grabbing; }
+#bow:not(.dragging) { transition: transform .45s cubic-bezier(.3,1.6,.5,1), opacity .5s; }
+#bow:focus-visible { filter: drop-shadow(0 0 6px #fff); }
+
+/* pistinha: laço balança chamando atenção */
+#gift:not(.opened) #bow:not(.dragging) { animation: wiggle 3s ease-in-out infinite; }
+@keyframes wiggle {
+  0%, 82%, 100% { rotate: 0deg; }
+  86% { rotate: -5deg; } 90% { rotate: 5deg; } 94% { rotate: -3deg; }
+}
+
+#gift.opened #lid { transform: translate(80px, -190px) rotate(28deg); opacity: 0; pointer-events: none; }
+#gift.opened #bow { transform: translateY(-40px) scale(1.2) rotate(-12deg); opacity: 0; pointer-events: none; }
+#gift.shake { animation: shake .5s; }
+@keyframes shake {
+  20% { transform: translateX(-6px) rotate(-1.5deg); }
+  40% { transform: translateX(6px) rotate(1.5deg); }
+  60% { transform: translateX(-4px); } 80% { transform: translateX(3px); }
+}
+
+/* ---------- envelope ---------- */
+#envelope {
+  position: absolute; z-index: 0;
+  left: 50%; top: 50%;
+  width: 58%;
+  transform: translate(-50%, 0) scale(.9);
+  opacity: 0; pointer-events: none;
+  background: none; border: 0; cursor: pointer;
+  transition: transform 1.3s cubic-bezier(.2,.8,.2,1), opacity .5s;
+}
+#envelope::after { content: ""; position: absolute; inset: -30px; } /* área de toque maior */
+#envelope svg { width: 100%; display: block; overflow: visible; filter: drop-shadow(0 6px 10px rgba(0,0,0,.3)); }
+#envelope.out { opacity: 1; transform: translate(-50%, -138%) scale(1); pointer-events: auto; animation: bob 3s ease-in-out 1.4s infinite; }
+@keyframes bob { 50% { translate: 0 -6px; } }
+#envelope:hover svg, #envelope:focus-visible svg { filter: drop-shadow(0 0 14px rgba(255,200,220,.9)); }
+
+#envelope .flap { transform-origin: 100px 0; transform-box: view-box; transition: transform .7s ease; }
+#envelope .seal { transition: opacity .3s; transform-origin: 100px 80px; }
+#envelope.open .flap { transform: scaleY(-1); }
+#envelope.open .seal { opacity: 0; }
+#envelope.out:not(.open) .seal { animation: beat 1.2s ease-in-out infinite; }
+@keyframes beat { 50% { transform: scale(1.18); } }
+
+#hint {
+  margin-top: 8px; font-size: .95rem; letter-spacing: .15em;
+  text-shadow: 0 0 10px rgba(255,143,184,.7);
+  animation: pulse 2s ease-in-out infinite;
+  min-height: 1.4em; text-align: center;
+}
+@keyframes pulse { 50% { opacity: .45; } }
+
+/* ---------- carta ---------- */
+#overlay {
+  position: fixed; inset: 0; z-index: 10;
+  display: grid; place-items: center; padding: 18px;
+  background: rgba(15, 6, 28, .72);
+  backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .5s;
+}
+#overlay.show { opacity: 1; pointer-events: auto; }
+
+#paper {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: 90vh; overflow-y: auto;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+  transform: translateY(80px) scale(.7) rotate(-3deg);
+  transition: transform .8s cubic-bezier(.2,1.1,.3,1);
+  scrollbar-width: thin; scrollbar-color: #e8567f transparent;
+}
+#overlay.show #paper { transform: none; }
+#paper img { display: block; width: 100%; height: auto; }
+
+#close {
+  position: sticky; top: 10px; z-index: 2;
+  display: block; margin: 10px 10px -44px auto;
+  width: 34px; height: 34px; border-radius: 50%; border: 0;
+  background: #e8567f; color: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,.3);
+}
+#close:hover { background: #d6477a; }
+
+@media (prefers-reduced-motion: reduce) {
+  #giftWrap, #hint, #envelope.out { animation: none; }
+}
